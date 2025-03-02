@@ -329,7 +329,7 @@ class SECFilingParser:
     def display_section_html(self, section_name: str) -> None:
         """
         Display the HTML content of a section in a scrollable window.
-        Automatically removes duplicate tables.
+        Automatically removes duplicate tables and handles footnote tables properly.
         
         Args:
             section_name: Name of the section (e.g., 'Item 1', 'Item 1A')
@@ -342,10 +342,14 @@ class SECFilingParser:
         # Parse the HTML
         soup = BeautifulSoup(html_content, 'lxml')
         
-        # Remove duplicate tables
+        # First, remove footnote tables
+        soup, footnote_count, _ = self._remove_footnote_tables(soup, section_name)
+        
+        # Process tables - remove duplicates
         seen_tables = set()
         original_table_count = len(soup.find_all('table'))
         
+        # Handle regular tables and deduplication
         for table in soup.find_all('table'):
             # Clean the table to normalize it for comparison
             cleaned_table = clean_table_html(table)
@@ -371,6 +375,7 @@ class SECFilingParser:
         # Print debug info
         remaining_tables = len(seen_tables)
         duplicates = original_table_count - remaining_tables
+        
         if duplicates > 0:
             print(f"Removed {duplicates} duplicate tables from {section_name}")
         
@@ -487,6 +492,7 @@ class SECFilingParser:
     def display_section_tables_from_parsed(self, section_name: str, max_width: int = 800) -> None:
         """
         Display all tables from a specific section using parsed data.
+        Automatically identifies and skips footnote tables to prevent duplication.
         
         Args:
             section_name: Name of the section (e.g., 'Item 1', 'Item 1A')
@@ -497,7 +503,7 @@ class SECFilingParser:
             print(f"No tables found in {section_name}")
             return
             
-        print(f"Found {len(section_data['tables'])} tables in {section_name}:")
+        print(f"Found {len(section_data['tables'])} data tables in {section_name}:")
         self.display_tables(section_data['tables'], max_width)
     
     def display_section_text(self, section_name: str, line_length: int = 100) -> None:
@@ -529,6 +535,109 @@ class SECFilingParser:
             # Fallback to regular text display if not in a notebook
             self.display_text(markdown_text, line_length)
     
+    def _remove_footnote_tables(self, soup: BeautifulSoup, section_name: str) -> Tuple[BeautifulSoup, int, List[str]]:
+        """
+        Remove footnote tables from the soup and handle duplicate footnotes.
+        
+        Specifically designed to handle SEC filing footnotes that may appear in both table form
+        and text form. When both forms exist, it removes the table form and keeps the text form.
+        
+        Args:
+            soup: BeautifulSoup object containing the HTML content
+            section_name: Name of the section for logging purposes
+            
+        Returns:
+            Tuple of (modified soup, footnote count, list of footnote texts)
+        """
+        from bs4 import NavigableString
+        footnote_count = 0
+        footnote_texts = []
+        
+        # First, identify all footnote tables
+        footnote_tables = []
+        for table in soup.find_all('table'):
+            if self._is_footnote_table(table):
+                footnote_tables.append(table)
+        
+        # Process each footnote table
+        for table in footnote_tables:
+            # Extract the footnote reference and text
+            rows = table.find_all('tr')
+            if not rows:
+                table.decompose()  # Remove empty tables
+                continue
+                
+            # Find the data row with the footnote content
+            data_row = None
+            for row in rows:
+                cells = row.find_all(['td', 'th'])
+                if len(cells) >= 2 and cells[0].get_text(strip=True) and cells[1].get_text(strip=True):
+                    data_row = row
+                    break
+                    
+            if not data_row:
+                table.decompose()  # Remove tables without proper data
+                continue
+                
+            cells = data_row.find_all(['td', 'th'])
+            if len(cells) < 2:
+                table.decompose()  # Remove tables without proper cells
+                continue
+                
+            footnote_ref = cells[0].get_text(strip=True)
+            footnote_text = cells[1].get_text(strip=True)
+            
+            # Store footnote text for later use
+            footnote_content = f"{footnote_ref} {footnote_text}"
+            footnote_texts.append(footnote_content)
+            
+            # Check if this footnote also appears as text nearby
+            # Look at the next few siblings to see if the same content appears as text
+            next_element = table.next_sibling
+            duplicate_found = False
+            
+            # Normalize the footnote reference to handle different formats
+            # Convert -1 to (1), etc.
+            normalized_ref = footnote_ref
+            if re.match(r'^-\d+$', footnote_ref):
+                normalized_ref = f"({footnote_ref[1:]})"  # Convert -1 to (1)
+            
+            # Look through the next few elements
+            search_distance = 5  # Check next 5 elements
+            for _ in range(search_distance):
+                if not next_element:
+                    break
+                    
+                # If it's a text node or paragraph
+                if isinstance(next_element, NavigableString):
+                    sibling_text = str(next_element).strip()
+                    if normalized_ref in sibling_text or footnote_ref in sibling_text:
+                        duplicate_found = True
+                        break
+                elif hasattr(next_element, 'name') and next_element.name in ['p', 'div', 'span']:
+                    sibling_text = next_element.get_text(strip=True)
+                    if normalized_ref in sibling_text or footnote_ref in sibling_text:
+                        duplicate_found = True
+                        break
+                        
+                next_element = next_element.next_sibling
+            
+            # If no duplicate text found, create a text node with the footnote
+            if not duplicate_found:
+                footnote_node = soup.new_tag('p')
+                footnote_node.string = footnote_content
+                table.replace_with(footnote_node)
+            else:
+                # Duplicate found, just remove the table
+                table.decompose()
+                
+            footnote_count += 1
+        
+        if footnote_count > 0:
+            print(f"Processed {footnote_count} footnote tables in {section_name}")
+            
+        return soup, footnote_count, footnote_texts
+    
     def parse_section(self, section_name: str, output_format: str = 'simple') -> Dict:
         """
         Parse a section from the document and return its content.
@@ -556,12 +665,41 @@ class SECFilingParser:
         # Parse HTML content
         section_soup = BeautifulSoup(html_content, 'lxml')
         
+        # Remove footnote tables for all output formats to ensure consistency
+        section_soup, footnote_count, footnote_texts = self._remove_footnote_tables(section_soup, section_name)
+        
         if output_format == 'simple':
-            # Extract tables
+            # Extract tables with duplicate removal
             tables = []
+            seen_tables = set()  # To track duplicate tables
+            original_table_count = len(section_soup.find_all('table'))
+            
             for table in section_soup.find_all('table'):
-                tables.append(str(table))
+                
+                # Clean the table to normalize it for comparison
+                cleaned_table = clean_table_html(table)
+                
+                # Skip empty tables
+                if not cleaned_table.strip():
+                    table.decompose()
+                    continue
+                    
+                # Check for duplicates using a hash of the cleaned table
+                table_hash = hash(cleaned_table)
+                if table_hash in seen_tables:
+                    # This is a duplicate table, remove it
+                    table.decompose()
+                    continue
+                    
+                # Add to seen tables
+                seen_tables.add(table_hash)
+                tables.append(cleaned_table)
                 table.decompose()  # Remove table from text content
+            
+            # Print debug info
+            duplicates = original_table_count - len(tables)
+            if duplicates > 0:
+                print(f"Removed {duplicates} duplicate tables from {section_name} in simple format")
             
             # Store both HTML and converted markdown text
             html = str(section_soup)
@@ -579,11 +717,14 @@ class SECFilingParser:
             # Create a copy to work with
             soup_copy = BeautifulSoup(str(section_soup), 'lxml')
             
-            # First, replace all tables with unique placeholders
+            # Process tables - handle deduplication and replace regular tables with placeholders
             table_replacements = {}
             seen_tables = set()  # To track duplicate tables
             
+            # Handle regular tables and create placeholders
             for i, table in enumerate(soup_copy.find_all('table')):
+                
+                # For regular tables, handle deduplication and create placeholders
                 cleaned_table = clean_table_html(table)
                 
                 # Skip empty tables
@@ -619,8 +760,8 @@ class SECFilingParser:
             
             # Print debug info
             original_table_count = sum(1 for _ in section_soup.find_all('table'))
-            duplicates = original_table_count - len(table_replacements)
-            print(f"Found {len(table_replacements)} unique tables in section {section_name} (removed {duplicates} duplicates)")
+            duplicates = original_table_count - len(table_replacements) - footnote_count
+            print(f"Found {len(table_replacements)} unique tables in section {section_name} (removed {duplicates} duplicates, converted {footnote_count} footnotes to text)")
             
             return {'text': final_text}
 
@@ -642,9 +783,90 @@ class SECFilingParser:
             # For markdown, display as-is
             print(table_content)
 
+    def _is_footnote_table(self, table: Tag) -> bool:
+        """
+        Determine if a table is likely a footnote table using targeted detection for SEC filings.
+        
+        Specifically looks for the common SEC filing footnote patterns:
+        1. Simple tables with 1-2 rows and exactly 2 columns
+        2. First column contains just a reference marker like -1, -2, (1), (2), etc.
+        3. Second column contains longer explanatory text
+        4. Table appears isolated (not part of a larger data table)
+        
+        Args:
+            table: BeautifulSoup table element
+            
+        Returns:
+            True if the table appears to be a footnote table, False otherwise
+        """
+        # Check if table has rows
+        rows = table.find_all('tr')
+        if not rows:
+            return False
+            
+        # Check if the table has at most 3 rows (to handle header rows)
+        if len(rows) > 3:
+            return False
+            
+        # Find the first non-empty row with cells
+        data_row = None
+        for row in rows:
+            cells = row.find_all(['td', 'th'])
+            if len(cells) >= 2 and any(cell.get_text(strip=True) for cell in cells):
+                data_row = row
+                break
+                
+        if not data_row:
+            return False
+            
+        # Check if the row has exactly 2 cells
+        cells = data_row.find_all(['td', 'th'])
+        if len(cells) != 2:
+            return False
+            
+        # Check if the first cell contains a footnote reference pattern
+        first_cell_text = cells[0].get_text(strip=True)
+        
+        # Expanded patterns to catch more SEC footnote references
+        footnote_patterns = [
+            r'^-\d+$',                # -1, -2, etc.
+            r'^\(\d+\)$',            # (1), (2), etc.
+            r'^\d+\.$',               # 1., 2., etc.
+            r'^\d+$',                 # 1, 2, etc.
+            r'^\*+$',                 # *, **, etc.
+            r'^\[\d+\]$',             # [1], [2], etc.
+            r'^[a-zA-Z]\)$',          # a), b), etc.
+            r'^\([a-zA-Z]\)$',        # (a), (b), etc.
+            r'^[†‡§¶]$'  # †, ‡, §, ¶
+        ]
+        
+        # Check if the first cell matches any footnote pattern
+        is_footnote_ref = any(re.match(pattern, first_cell_text) for pattern in footnote_patterns)
+        
+        # Also consider very short first cells (1-3 chars) as potential footnote references
+        if not is_footnote_ref and len(first_cell_text) <= 3:
+            is_footnote_ref = True
+        
+        # Check if the second cell contains substantial text (footnote explanation)
+        second_cell_text = cells[1].get_text(strip=True)
+        has_explanation = len(second_cell_text) > 15  # Increased threshold for explanation text
+        
+        # Additional check: if the table is alone and follows another table
+        # This helps identify isolated footnote tables that follow main data tables
+        is_isolated_table = False
+        if len(rows) == 1 or (len(rows) == 2 and len(rows[0].find_all(['td', 'th'])) <= 2):
+            prev_element = table.find_previous_sibling()
+            if prev_element and prev_element.name == 'table':
+                is_isolated_table = True
+        
+        # Return true if it matches footnote patterns or is an isolated simple table after another table
+        return (is_footnote_ref and has_explanation) or (is_isolated_table and len(first_cell_text) <= 5 and has_explanation)
+    
     def display_section_tables(self, section_name: str) -> None:
         """
         Display all tables found in a specific section.
+        Automatically identifies and skips footnote tables to prevent duplication.
+        Also removes duplicate tables to ensure clean output.
         
         Args:
             section_name: Name of the section (e.g., 'Item 1', 'Item 1A')
@@ -657,18 +879,55 @@ class SECFilingParser:
         # Parse the HTML
         soup = BeautifulSoup(html_content, 'lxml')
         
-        # Find all tables
+        # First, remove footnote tables
+        soup, footnote_count, footnote_texts = self._remove_footnote_tables(soup, section_name)
+        
+        # Find remaining tables after footnote removal
         tables = soup.find_all('table')
         
         if not tables:
-            print(f"No tables found in {section_name}")
+            print(f"No data tables found in {section_name} (found {footnote_count} footnote tables)")
+            
+            # Display footnotes as text if there are any
+            if footnote_texts:
+                print("\nFootnotes:")
+                for footnote in footnote_texts:
+                    print(f"  {footnote}")
             return
             
         # Use the same style as display_section_html_interactive
         style = _BASE_STYLE
         
-        # Display each table with consistent styling
-        for i, table in enumerate(tables, 1):
+        # Handle duplicates for remaining tables
+        data_tables = []
+        seen_tables = set()  # To track duplicate tables
+        original_table_count = len(tables)
+        
+        for table in tables:
+            # Clean the table to normalize it for comparison
+            cleaned_table = clean_table_html(table)
+            
+            # Skip empty tables
+            if not cleaned_table.strip():
+                continue
+                
+            # Check for duplicates using a hash of the cleaned table
+            table_hash = hash(cleaned_table)
+            if table_hash in seen_tables:
+                # This is a duplicate table, skip it
+                continue
+                
+            # Add to seen tables and data_tables
+            seen_tables.add(table_hash)
+            data_tables.append(table)
+        
+        # Print debug info
+        duplicates = original_table_count - len(data_tables)
+        if duplicates > 0:
+            print(f"Removed {duplicates} duplicate tables from {section_name}")
+        
+        # Display each data table with consistent styling
+        for i, table in enumerate(data_tables, 1):
             # Clean up any existing styles
             for element in table.find_all(True):
                 if 'style' in element.attrs:
@@ -683,6 +942,12 @@ class SECFilingParser:
             html_output += f"<div class='sec-content'>{str(table)}</div>"
             html_output += "</div>"
             display(HTML(html_output))
+        
+        # Display footnotes as text if there are any
+        if footnote_texts:
+            print("\nFootnotes:")
+            for footnote in footnote_texts:
+                print(f"  {footnote}")
             
     def _extract_html_from_xbrl(self, html_content: str) -> str:
         """
