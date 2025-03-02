@@ -329,6 +329,7 @@ class SECFilingParser:
     def display_section_html(self, section_name: str) -> None:
         """
         Display the HTML content of a section in a scrollable window.
+        Automatically removes duplicate tables.
         
         Args:
             section_name: Name of the section (e.g., 'Item 1', 'Item 1A')
@@ -338,9 +339,40 @@ class SECFilingParser:
             print(f"No content found for {section_name}")
             return
         
-        # Parse the HTML to make it prettier
+        # Parse the HTML
         soup = BeautifulSoup(html_content, 'lxml')
+        
+        # Remove duplicate tables
+        seen_tables = set()
+        original_table_count = len(soup.find_all('table'))
+        
+        for table in soup.find_all('table'):
+            # Clean the table to normalize it for comparison
+            cleaned_table = clean_table_html(table)
+            
+            # Skip empty tables
+            if not cleaned_table.strip():
+                table.decompose()
+                continue
+                
+            # Check for duplicates using a hash of the cleaned table
+            table_hash = hash(cleaned_table)
+            if table_hash in seen_tables:
+                # This is a duplicate table, remove it
+                table.decompose()
+                continue
+                
+            # Add to seen tables
+            seen_tables.add(table_hash)
+        
+        # Get the final content
         content = str(soup)
+        
+        # Print debug info
+        remaining_tables = len(seen_tables)
+        duplicates = original_table_count - remaining_tables
+        if duplicates > 0:
+            print(f"Removed {duplicates} duplicate tables from {section_name}")
         
         # Add styling and wrap content in a scrollable div
         style = _BASE_STYLE
