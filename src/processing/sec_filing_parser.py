@@ -342,7 +342,10 @@ class SECFilingParser:
         # Parse the HTML
         soup = BeautifulSoup(html_content, 'lxml')
         
-        # First, remove footnote tables
+        # Clean page footers
+        soup, footer_count = self._clean_page_footers(soup)
+        
+        # Remove footnote tables
         soup, footnote_count, _ = self._remove_footnote_tables(soup, section_name)
         
         # Process tables - remove duplicates
@@ -535,6 +538,74 @@ class SECFilingParser:
             # Fallback to regular text display if not in a notebook
             self.display_text(markdown_text, line_length)
     
+    def _clean_page_footers(self, soup: BeautifulSoup) -> Tuple[BeautifulSoup, int]:
+        """
+        Remove page footer text and copyright statements from SEC filings.
+        
+        Page footers typically appear at the bottom of each page and follow patterns like:
+        "Company Name | YYYY Form 10-K | Page Number"
+        
+        Copyright statements typically follow patterns like:
+        "Copyright© 2017 S&P, a division of McGraw Hill Financial. All rights reserved."
+        
+        Args:
+            soup: BeautifulSoup object containing the HTML content
+            
+        Returns:
+            Tuple of (modified soup, count of items removed)
+        """
+        removal_count = 0
+        
+        # Look for text nodes and paragraphs that match footer patterns
+        patterns = [
+            # Company | Form 10-K | Page
+            r'[\w\s,\.]+\s*\|\s*\d{4}\s*Form\s*10-K\s*\|\s*\d+\s*$',
+            # Page X of Y
+            r'^\s*Page\s*\d+\s*of\s*\d+\s*$',
+            # Just page numbers at end of line
+            r'^.*\s{3,}\d+\s*$',
+            # Copyright statements
+            r'^\s*Copyright[©\s]\s*\d{4}\s+[\w\s&,\.]+\s*All\s*rights\s*reserved\.?\s*$',
+            # Alternative copyright format
+            r'^\s*©\s*\d{4}\s+[\w\s&,\.]+\s*All\s*rights\s*reserved\.?\s*$',
+            # General copyright line
+            r'^\s*Copyright[©\s]\s*\d{4}\s+[\w\s&,\.]+\s*$'
+        ]
+        
+        # Compile the patterns for efficiency
+        compiled_patterns = [re.compile(pattern, re.IGNORECASE) for pattern in patterns]
+        
+        # Check text nodes
+        for text in soup.find_all(string=True):
+            if text.parent.name not in ['script', 'style', 'head', 'title']:
+                text_content = text.strip()
+                for pattern in compiled_patterns:
+                    if pattern.match(text_content):
+                        # Replace the footer/copyright with empty string
+                        text.replace_with('')
+                        
+                        # If parent element is now empty, remove it completely
+                        if text.parent and not text.parent.get_text(strip=True):
+                            text.parent.decompose()
+                            
+                        removal_count += 1
+                        break
+        
+        # Check paragraph elements
+        for p in soup.find_all(['p', 'div', 'span']):
+            text_content = p.get_text().strip()
+            for pattern in compiled_patterns:
+                if pattern.match(text_content):
+                    # Remove the entire paragraph
+                    p.decompose()
+                    removal_count += 1
+                    break
+        
+        if removal_count > 0:
+            print(f"Removed {removal_count} page footers and copyright statements")
+            
+        return soup, removal_count
+    
     def _remove_footnote_tables(self, soup: BeautifulSoup, section_name: str) -> Tuple[BeautifulSoup, int, List[str]]:
         """
         Remove footnote tables from the soup and handle duplicate footnotes.
@@ -664,6 +735,9 @@ class SECFilingParser:
         
         # Parse HTML content
         section_soup = BeautifulSoup(html_content, 'lxml')
+        
+        # Clean page footers
+        section_soup, footer_count = self._clean_page_footers(section_soup)
         
         # Remove footnote tables for all output formats to ensure consistency
         section_soup, footnote_count, footnote_texts = self._remove_footnote_tables(section_soup, section_name)
