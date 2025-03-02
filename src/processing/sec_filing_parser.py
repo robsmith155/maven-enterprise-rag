@@ -549,9 +549,29 @@ class SECFilingParser:
             
             # First, replace all tables with unique placeholders
             table_replacements = {}
+            seen_tables = set()  # To track duplicate tables
+            
             for i, table in enumerate(soup_copy.find_all('table')):
+                cleaned_table = clean_table_html(table)
+                
+                # Skip empty tables
+                if not cleaned_table.strip():
+                    table.decompose()
+                    continue
+                    
+                # Check for duplicates using a hash of the cleaned table
+                table_hash = hash(cleaned_table)
+                if table_hash in seen_tables:
+                    # This is a duplicate table, remove it
+                    table.decompose()
+                    continue
+                    
+                # Add to seen tables
+                seen_tables.add(table_hash)
+                
+                # Create placeholder
                 placeholder = f"TABLE_PLACEHOLDER_{i}"
-                table_replacements[placeholder] = clean_table_html(table)
+                table_replacements[placeholder] = cleaned_table
                 placeholder_tag = soup_copy.new_tag('div')
                 placeholder_tag.string = placeholder
                 table.replace_with(placeholder_tag)
@@ -566,7 +586,9 @@ class SECFilingParser:
                     final_text = final_text.replace(placeholder, f"\n\n{table_html}\n\n")
             
             # Print debug info
-            print(f"Found {len(table_replacements)} tables in section {section_name}")
+            original_table_count = sum(1 for _ in section_soup.find_all('table'))
+            duplicates = original_table_count - len(table_replacements)
+            print(f"Found {len(table_replacements)} unique tables in section {section_name} (removed {duplicates} duplicates)")
             
             return {'text': final_text}
 
