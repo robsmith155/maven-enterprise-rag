@@ -235,7 +235,8 @@ class SECFilingParser:
             'cik': r'CENTRAL INDEX KEY:\s*(.+?)\n',
             'filing_date': r'FILED AS OF DATE:\s*(.+?)\n',
             'period_end_date': r'CONFORMED PERIOD OF REPORT:\s*(.+?)\n',
-            'fiscal_year_end': r'FISCAL YEAR END:\s*(.+?)\n'
+            'fiscal_year_end': r'FISCAL YEAR END:\s*(.+?)\n',
+            'industry': r'STANDARD INDUSTRIAL CLASSIFICATION:\s*(.+?)\n'
         }
         
         # Extract metadata using regex
@@ -244,6 +245,7 @@ class SECFilingParser:
             if match:
                 metadata[field] = match.group(1).strip()
         
+            
         self.metadata = metadata
         return metadata
     

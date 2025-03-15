@@ -6,3 +6,13 @@ beautifulsoup4>=4.12.0
 lxml>=4.9.0
 nltk>=3.8.0
 unstructured[all-docs]
+openai
+tiktoken
+chonkie[all]
+lancedb
+sentence-transformers
+spacy
+colorama
+tenacity
+seaborn
+rouge-score
