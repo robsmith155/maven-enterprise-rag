@@ -1,0 +1,439 @@
+[
+  {
+    "id": "d9fd9582-4495-4310-a142-8d3beb5e0d1e",
+    "question": "How many shares did Apple buy back in 2020 compared to 2021?",
+    "answer": "In 2020, Apple repurchased 917 million shares of its common stock for $72.5 billion, while in 2021, the company repurchased $85.5 billion of its common stock.",
+    "source_information": [
+      {
+        "company": "Apple",
+        "ticker": "AAPL",
+        "year": "2020",
+        "section": "Item 7",
+        "subsection": "Capital Return Program",
+        "span_text": "As of September 26, 2020, the Company was authorized to purchase up to $225 billion of the Company’s common stock under a share repurchase program, of which $168.6 billion had been utilized. During 2020, the Company repurchased 917 million shares of its common stock for $72.5 billion, including 141 million shares delivered under a $10.0 billion November 2019 ASR and 64 million shares delivered under a $6.0 billion May 2020 ASR.",
+        "span_location": {
+          "document_id": "SEC_10-K_2020_AAPL",
+          "start_offset": 1164,
+          "end_offset": 1222
+        },
+        "contains_table": false,
+        "table_row": null,
+        "table_column": null,
+        "processed_path": "./data/processed/reports/report_AAPL_2020.json"
+      },
+      {
+        "company": "Apple",
+        "ticker": "AAPL",
+        "year": "2021",
+        "section": "Item 7",
+        "subsection": "Capital Return Program",
+        "span_text": "During 2021, the Company repurchased $85.5 billion of its common stock and paid dividends and dividend equivalents of $14.5 billion.",
+        "span_location": {
+          "document_id": "SEC_10-K_2021_AAPL",
+          "start_offset": 1164,
+          "end_offset": 1222
+        },
+        "contains_table": false,
+        "table_row": null,
+        "table_column": null,
+        "processed_path": "./data/processed/reports/report_AAPL_2021.json"
+      }
+    ],
+    "reasoning_path": [
+      "Step 1: Identify the repurchased shares in 2020.",
+      "Step 2: Identify the repurchased shares in 2021.",
+      "Step 3: Compare the repurchased shares in 2020 and 2021."
+    ],
+    "question_type": "single_company_multi_year",
+    "difficulty": "easy",
+    "contains_tables": false
+  },
+  {
+    "id": "01e2d5d6-6b00-45d1-8657-7e85b859d4b8",
+    "question": "How did Apple's net sales change from 2018 to 2019, and what were the main drivers behind this change?",
+    "answer": "Apple's total net sales decreased by 2% or $5.4 billion during 2019 compared to 2018. This decline was primarily driven by lower net sales of iPhone, which was partially offset by higher net sales of Wearables, Home and Accessories, and Services in all geographic operating segments. The weakness in foreign currencies also had a significant unfavorable impact on net sales during 2019.",
+    "source_information": [
+      {
+        "company": "Apple",
+        "ticker": "AAPL",
+        "year": "2019",
+        "section": "Item 7",
+        "subsection": "Fiscal 2019 Highlights",
+        "span_text": "Total net sales decreased 2% or $5.4 billion during 2019 compared to 2018, driven by lower net sales of iPhone, partially offset by higher net sales of Wearables, Home and Accessories and Services in all geographic operating segments. The weakness in foreign currencies had a significant unfavorable impact on net sales during 2019.",
+        "span_location": {
+          "document_id": "1",
+          "start_offset": 1234,
+          "end_offset": 1345
+        },
+        "contains_table": false,
+        "table_row": null,
+        "table_column": null,
+        "processed_path": "./data/processed/reports/report_AAPL_2019.json"
+      },
+      {
+        "company": "Apple",
+        "ticker": "AAPL",
+        "year": "2018",
+        "section": "Item 7",
+        "subsection": "Fiscal 2018 Highlights",
+        "span_text": "Net sales increased 16% or $36.4 billion during 2018 compared to 2017, driven by higher net sales of iPhone, Services and Other Products. Net sales increased year-over-year in each of the geographic reportable segments.",
+        "span_location": {
+          "document_id": "1",
+          "start_offset": 5678,
+          "end_offset": 5789
+        },
+        "contains_table": false,
+        "table_row": null,
+        "table_column": null,
+        "processed_path": "./data/processed/reports/report_AAPL_2018.json"
+      }
+    ],
+    "reasoning_path": [
+      "Step 1: Identify the net sales figures for 2018 and 2019 from the highlights sections.",
+      "Step 2: Calculate the percentage change in net sales from 2018 to 2019.",
+      "Step 3: Analyze the reasons for the change as outlined in the fiscal highlights."
+    ],
+    "question_type": "single_company_multi_year",
+    "difficulty": "medium",
+    "contains_tables": false
+  },
+  {
+    "id": "5fd570db-db81-4369-8f35-4aa13995654a",
+    "question": "How did the revenue growth rates of Google and NVIDIA compare in 2018?",
+    "answer": "In 2018, Google's revenue growth was 23% year over year, while NVIDIA's revenue growth was significantly higher at 41%. This indicates that NVIDIA outperformed Google in terms of revenue growth during that year.",
+    "source_information": [
+      {
+        "company": "Google",
+        "ticker": "GOOG",
+        "year": "2018",
+        "section": "Item 7",
+        "subsection": "Executive Overview of Results",
+        "span_text": "Revenues of $110.9 billion and revenue growth of 23% year over year, constant currency revenue growth of 24% year over year.",
+        "span_location": {
+          "document_id": "1",
+          "start_offset": 123,
+          "end_offset": 183
+        },
+        "contains_table": false,
+        "table_row": null,
+        "table_column": null,
+        "processed_path": "./data/processed/reports/report_GOOG_2018.json"
+      },
+      {
+        "company": "NVIDIA",
+        "ticker": "NVDA",
+        "year": "2018",
+        "section": "Item 7",
+        "subsection": "Fiscal Year Summary",
+        "span_text": "Revenue for fiscal year 2018 grew 41% to $9.71 billion, reflecting broad growth in each of our market platforms - gaming, professional visualization, datacenter, and automotive.",
+        "span_location": {
+          "document_id": "2",
+          "start_offset": 456,
+          "end_offset": 516
+        },
+        "contains_table": false,
+        "table_row": null,
+        "table_column": null,
+        "processed_path": "./data/processed/reports/report_NVDA_2018.json"
+      }
+    ],
+    "reasoning_path": [
+      "Step 1: Identify the revenue growth rate for Google from its 10-K filing.",
+      "Step 2: Identify the revenue growth rate for NVIDIA from its 10-K filing.",
+      "Step 3: Compare the two growth rates to determine which company had higher revenue growth."
+    ],
+    "question_type": "multi_company_single_year",
+    "difficulty": "medium",
+    "contains_tables": false
+  },
+  {
+    "id": "dd218ea8-e6c1-432f-8194-c78beef2c044",
+    "question": "How did Microsoft calculate their annualized run rate in 2015, and what specific financial commitments did they exclude from their reported amounts?",
+    "answer": "In 2015, Microsoft calculated their annualized run rate by multiplying their June 2015 revenue by twelve months. They excluded long-term tax contingencies, other tax liabilities, deferred income taxes, and long-term pension liabilities totaling $15.2 billion from the reported amounts.",
+    "source_information": [
+      {
+        "company": "MSFT",
+        "ticker": "MSFT",
+        "year": "2015",
+        "section": "Item 7",
+        "subsection": null,
+        "span_text": "Annualized run rate was calculated by multiplying June 2015 revenue by twelve months.",
+        "span_location": {
+          "document_id": "SEC_10-K_2015_MSFT",
+          "start_offset": 0,
+          "end_offset": 74
+        },
+        "contains_table": false,
+        "table_row": null,
+        "table_column": null,
+        "processed_path": "./data/processed/reports/report_MSFT_2015.json"
+      },
+      {
+        "company": "MSFT",
+        "ticker": "MSFT",
+        "year": "2015",
+        "section": "Item 7",
+        "subsection": null,
+        "span_text": "We have excluded long-term tax contingencies, other tax liabilities, deferred income taxes, and long-term pension liabilities of $15.2 billion from the amounts presented.",
+        "span_location": {
+          "document_id": "SEC_10-K_2015_MSFT",
+          "start_offset": 0,
+          "end_offset": 174
+        },
+        "contains_table": false,
+        "table_row": null,
+        "table_column": null,
+        "processed_path": "./data/processed/reports/report_MSFT_2015.json"
+      }
+    ],
+    "reasoning_path": [
+      "Step 1: Identify how Microsoft calculated their annualized run rate in 2015 from the text stating it was done by multiplying June 2015 revenue by twelve months.",
+      "Step 2: Determine the specific financial commitments Microsoft excluded from their reported amounts, which included long-term tax contingencies, other tax liabilities, deferred income taxes, and long-term pension liabilities totaling $15.2 billion."
+    ],
+    "question_type": "single_company_single_year",
+    "difficulty": "easy",
+    "contains_tables": false
+  },
+  {
+    "id": "f8285225-6cf4-4984-b71c-510455c295cf",
+    "question": "How does Google manage the risks associated with fluctuations in foreign currency exchange rates and what were the potential impacts on their income before taxes for the years 2020 and 2021?",
+    "answer": "Google manages the risks associated with fluctuations in foreign currency exchange rates by using foreign exchange forward contracts and option contracts, including collars, to offset the foreign exchange risk on assets, liabilities, and forecasted U.S. dollar-equivalent earnings. These contracts reduce, but do not entirely eliminate, the effect of foreign currency exchange rate movements. For the years 2020 and 2021, if an adverse 10% foreign currency exchange rate change was applied to total monetary assets, liabilities, and commitments, it would have resulted in an adverse effect on income before income taxes of approximately $497 million and $285 million, respectively.",
+    "source_information": [
+      {
+        "company": "GOOG",
+        "ticker": "GOOG",
+        "year": "2022",
+        "section": "Item 7A",
+        "subsection": "Foreign Currency Exchange Risk",
+        "span_text": "We use foreign exchange forward contracts to offset the foreign exchange risk on assets and liabilities denominated in currencies other than the functional currency of the subsidiary. These forward contracts reduce, but do not entirely eliminate, the effect of foreign currency exchange rate movements on our assets and liabilities. The foreign currency gains and losses on these assets and liabilities are recorded in other income (expense), net, which are offset by the gains and losses on the forward contracts.",
+        "span_location": {
+          "document_id": "SEC-10K-2022-GOOG",
+          "start_offset": 1025,
+          "end_offset": 1398
+        },
+        "contains_table": false,
+        "table_row": null,
+        "table_column": null,
+        "processed_path": "./data/processed/reports/report_GOOG_2022.json"
+      },
+      {
+        "company": "GOOG",
+        "ticker": "GOOG",
+        "year": "2022",
+        "section": "Item 7A",
+        "subsection": "Foreign Currency Exchange Risk",
+        "span_text": "If an adverse 10% foreign currency exchange rate change was applied to total monetary assets, liabilities, and commitments denominated in currencies other than the functional currencies at the balance sheet date, it would have resulted in an adverse effect on income before income taxes of approximately $497 million and $285 million as of December 31,2020 and 2021, respectively, after consideration of the effect of foreign exchange contracts in place for the years ended December 31,2020 and 2021.",
+        "span_location": {
+          "document_id": "SEC-10K-2022-GOOG",
+          "start_offset": 1400,
+          "end_offset": 1775
+        },
+        "contains_table": false,
+        "table_row": null,
+        "table_column": null,
+        "processed_path": "./data/processed/reports/report_GOOG_2022.json"
+      }
+    ],
+    "reasoning_path": [
+      "Step 1: Identify Google's strategy to manage foreign currency exchange risks from the 'Foreign Currency Exchange Risk' subsection.",
+      "Step 2: Extract the specific financial impact of a hypothetical 10% adverse change in foreign currency exchange rates on Google's income before taxes for the years 2020 and 2021."
+    ],
+    "question_type": "single_company_single_year",
+    "difficulty": "medium",
+    "contains_tables": false
+  },
+  {
+    "id": "f3f4f98c-c82e-4a68-85a1-de18787135a2",
+    "question": "How has NVIDIA's investment in research and development changed from 2016 to 2022?",
+    "answer": "NVIDIA's investment in research and development significantly increased from 2016 to 2022. In 2016, the company had invested $12 billion in research and development since its inception. By 2022, this investment had more than doubled, reaching over $29 billion.",
+    "source_information": [
+      {
+        "company": "NVIDIA",
+        "ticker": "NVDA",
+        "year": "2016",
+        "section": "Item 1",
+        "subsection": "Our Company",
+        "span_text": "Innovation is at our core. We have invested $12 billion in research and development since our inception, yielding some 7,300 patent assets, including inventions essential to modern computing.",
+        "span_location": {
+          "document_id": "SEC_10-K_2016",
+          "start_offset": 1023,
+          "end_offset": 1162
+        },
+        "contains_table": false,
+        "table_row": null,
+        "table_column": null,
+        "processed_path": "./data/processed/reports/report_NVDA_2016.json"
+      },
+      {
+        "company": "NVIDIA",
+        "ticker": "NVDA",
+        "year": "2022",
+        "section": "Item 1",
+        "subsection": "Our Company",
+        "span_text": "Innovation is at our core. We have invested over $29 billion in research and development since our inception, yielding inventions that are essential to modern computing.",
+        "span_location": {
+          "document_id": "SEC_10-K_2022",
+          "start_offset": 1023,
+          "end_offset": 1162
+        },
+        "contains_table": false,
+        "table_row": null,
+        "table_column": null,
+        "processed_path": "./data/processed/reports/report_NVDA_2022.json"
+      }
+    ],
+    "reasoning_path": [
+      "Step 1: Identify the sections in both the 2016 and 2022 SEC filings that discuss NVIDIA's investments in research and development.",
+      "Step 2: Extract the specific amounts mentioned in each year to compare the total investment over time.",
+      "Step 3: Note the increase in investment from $12 billion in 2016 to over $29 billion in 2022."
+    ],
+    "question_type": "single_company_multi_year",
+    "difficulty": "medium",
+    "contains_tables": false
+  }, {
+    "id": "cf1d017d-b6f2-48e2-b6a0-fad75fec4807",
+    "question": "How did the potential impact of a hypothetical 100 basis point increase in interest rates on Apple's investment portfolio change from 2018 to 2020?",
+    "answer": "In 2018, a hypothetical 100 basis point increase in interest rates would have resulted in a $4.9 billion decline in the fair market value of Apple's investment portfolio. By 2020, the impact of a similar increase in interest rates would have led to a $3.1 billion decline in the fair market value of the portfolio.",
+    "source_information": [
+      {
+        "company": "Apple Inc.",
+        "ticker": "AAPL",
+        "year": "2018",
+        "section": "Item 7A",
+        "subsection": "Interest Rate Risk",
+        "span_text": "To provide a meaningful assessment of the interest rate risk associated with the Company’s investment portfolio, the Company performed a sensitivity analysis to determine the impact a change in interest rates would have on the value of the investment portfolio assuming a 100 basis point parallel shift in the yield curve. Based on investment positions as of September 29,2018 and September 30,2017 , a hypothetical 100 basis point increase in interest rates across all maturities would result in a $4.9 billion and $6.0 billion incremental decline in the fair market value of the portfolio, respectively.",
+        "span_location": {
+          "document_id": "SEC_10K_AAPL_2018",
+          "start_offset": 1024,
+          "end_offset": 1456
+        },
+        "contains_table": false,
+        "table_row": null,
+        "table_column": null,
+        "processed_path": "./data/processed/reports/report_AAPL_2018.json"
+      },
+      {
+        "company": "Apple Inc.",
+        "ticker": "AAPL",
+        "year": "2020",
+        "section": "Item 7A",
+        "subsection": "Interest Rate Risk",
+        "span_text": "To provide a meaningful assessment of the interest rate risk associated with the Company’s investment portfolio, the Company performed a sensitivity analysis to determine the impact a change in interest rates would have on the value of the investment portfolio assuming a 100 basis point parallel shift in the yield curve. Based on investment positions as of September 26,2020 and September 28,2019, a hypothetical 100 basis point increase in interest rates across all maturities would result in a $3.1 billion and $2.8 billion incremental decline in the fair market value of the portfolio, respectively.",
+        "span_location": {
+          "document_id": "SEC_10K_AAPL_2020",
+          "start_offset": 1024,
+          "end_offset": 1456
+        },
+        "contains_table": false,
+        "table_row": null,
+        "table_column": null,
+        "processed_path": "./data/processed/reports/report_AAPL_2020.json"
+      }
+    ],
+    "reasoning_path": [
+      "Step 1: Identify the relevant sections in the 2018 and 2020 SEC filings that discuss the impact of a hypothetical 100 basis point increase in interest rates on Apple's investment portfolio.",
+      "Step 2: Extract the specific impacts from both years, noting the decline in the fair market value of the investment portfolio due to the interest rate increase.",
+      "Step 3: Compare the extracted values to determine the change in impact from 2018 to 2020."
+    ],
+    "question_type": "single_company_multi_year",
+    "difficulty": "medium",
+    "contains_tables": false
+  }, {
+    "id": "7fc75be9-52fa-42f2-ba72-8a0107e5eb42",
+    "question": "How did the number of shareholders of record for Apple change from 2017 to 2019?",
+    "answer": "The number of shareholders of record for Apple decreased from 25,333 in 2017 to 23,233 in 2019.",
+    "source_information": [
+      {
+        "company": "AAPL",
+        "ticker": "AAPL",
+        "year": "2017",
+        "section": "Item 5",
+        "subsection": "Holders",
+        "span_text": "As of October 20,2017 , there were 25,333 shareholders of record.",
+        "span_location": {
+          "document_id": "SEC_10K_2017",
+          "start_offset": 0,
+          "end_offset": 0
+        },
+        "contains_table": false,
+        "table_row": null,
+        "table_column": null,
+        "processed_path": "./data/processed/reports/report_AAPL_2017.json"
+      },
+      {
+        "company": "AAPL",
+        "ticker": "AAPL",
+        "year": "2019",
+        "section": "Item 5",
+        "subsection": "Holders",
+        "span_text": "As of October 18,2019 , there were 23,233 shareholders of record.",
+        "span_location": {
+          "document_id": "SEC_10K_2019",
+          "start_offset": 0,
+          "end_offset": 0
+        },
+        "contains_table": false,
+        "table_row": null,
+        "table_column": null,
+        "processed_path": "./data/processed/reports/report_AAPL_2019.json"
+      }
+    ],
+    "reasoning_path": [
+      "Step 1: Identify the number of shareholders of record for Apple in 2017 from the SEC filing of that year.",
+      "Step 2: Identify the number of shareholders of record for Apple in 2019 from the SEC filing of that year.",
+      "Step 3: Compare the numbers from both years to determine the change."
+    ],
+    "question_type": "single_company_multi_year",
+    "difficulty": "medium",
+    "contains_tables": false
+  },
+  {
+    "id": "ed50c67e-ae38-47b7-9983-98e2af1d03eb",
+    "question": "How did NVIDIA's revenue growth in 2016 compare to 2021 compare, and what were the main drivers behind their revenue changes?",
+    "answer": "In 2016, NVIDIA's revenue grew 7% to a record $5.01 billion, driven by growth in GeForce GPUs for gaming and Tesla products for datacenter. In 2021, NVIDIA's revenue was $16.68 billion, marking a 53% increase from the previous year. The main drivers for NVIDIA's revenue growth were higher sales across desktop and laptop GPUs for gaming, and game-console SOCs, as well as the ramp of the NVIDIA Ampere GPU architecture and the inclusion of Mellanox revenue.",
+    "source_information": [
+      {
+        "company": "NVDA",
+        "ticker": "NVDA",
+        "year": "2016",
+        "section": "Item 7",
+        "subsection": "Fiscal 2016 Highlights",
+        "span_text": "Revenue grew 7% in fiscal year 2016 to a record $5.01 billion. GPU revenue was $4.19 billion, up 9% from the previous year, reflecting growth in GeForce GPUs for gaming and Tesla products for datacenter.",
+        "span_location": {
+          "document_id": "NVDA_2016_10K",
+          "start_offset": 1024,
+          "end_offset": 1137
+        },
+        "contains_table": false,
+        "table_row": null,
+        "table_column": null,
+        "processed_path": "./data/processed/reports/report_NVDA_2016.json"
+      },
+      {
+        "company": "NVDA",
+        "ticker": "NVDA",
+        "year": "2021",
+        "section": "Item 7",
+        "subsection": "Fiscal Year 2021 Summary",
+        "span_text": "Revenue for fiscal year 2021 was $16.68 billion, up 53% from a year earlier. From a market-platform perspective, Gaming revenue was up 41% from a year ago, reflecting higher sales across desktop and laptop GPUs for gaming, and game-console SOCs. GPUs for gaming benefited from the ramp of our GeForce RTX 30 Series based on the NVIDIA Ampere architecture.",
+        "span_location": {
+          "document_id": "NVDA_2021_10K",
+          "start_offset": 14567,
+          "end_offset": 14984
+        },
+        "contains_table": false,
+        "table_row": null,
+        "table_column": null,
+        "processed_path": "./data/processed/reports/report_NVDA_2021.json"
+      }
+    ],
+    "reasoning_path": [
+      "Step 1: Identify the revenue growth for Apple and NVIDIA from their respective 2021 financial highlights.",
+      "Step 2: Note the percentage increase and the absolute dollar increase for Apple.",
+      "Step 3: Identify the main drivers of revenue growth for NVIDIA, including the specific products and technologies contributing to the increase."
+    ],
+    "question_type": "multi_company_single_year",
+    "difficulty": "medium",
+    "contains_tables": false
+  }
+]
