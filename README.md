@@ -4,6 +4,8 @@
 
 This project was completed as part of the [Maven Enterprise RAG course](https://maven.com/boring-bot/advanced-llm), aimed at developing a benchmarking dataset for Retrieval-Augmented Generation (RAG) using SEC 10-K filing reports. The project explores the process of creating a robust benchmarking dataset to evaluate and enhance the capabilities of RAG pipelines.
 
+**Note:** LLMs were utilized to help develop and improve the code.
+
 ## Project Purpose
 
 This project aims to develop a robust benchmarking framework for evaluating RAG systems on financial documents, with a specific focus on SEC 10-K reports. Our key objectives include:
